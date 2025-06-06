@@ -1,3 +1,4 @@
+import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -6,8 +7,11 @@ import time
 from typing import Dict, Any
 
 def crawl_naver_blog(url: str) -> Dict[str, Any]:
+    # Render에서 설정한 CHROME_BIN 환경 변수를 참조
+    os.environ["CHROME_BIN"] = os.getenv("CHROME_BIN", "/usr/bin/chromium")
+
     options = Options()
-    options.add_argument("--headless")
+    options.add_argument("--headless")  # UI 없이 실행
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
 
