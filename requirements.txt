@@ -1,0 +1,11 @@
+#pydantic==2.11.5
+#reportlab --prefer-binary
+# webdriver-manager-4.0.2
+
+fastapi==0.115.12
+uvicorn==0.34.2
+selenium==4.9.0
+webdriver-manager
+openai==1.82.1
+python-dotenv==1.1.0
+reportlab==4.0.0
