@@ -9,18 +9,14 @@ from typing import Dict, Any
 def crawl_naver_blog(url: str) -> Dict[str, Any]:
     options = Options()
 
-    # Chrome binary 경로 자동 탐색 (google-chrome-stable 또는 google-chrome)
-    chrome_path = shutil.which("google-chrome-stable") or shutil.which("google-chrome")
-    if not chrome_path:
-        raise RuntimeError("Chrome binary not found in PATH.")
 
-    options.binary_location = chrome_path
+    options.binary_location = "/usr/bin/google-chrome-stable"  # 실제 설치된 경로에 맞게 변경
+
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
-    # ChromeDriver 경로 명시 (Dockerfile에서 /usr/local/bin/chromedriver로 설치됨)
     service = Service("/usr/local/bin/chromedriver")
 
     driver = webdriver.Chrome(service=service, options=options)
