@@ -14,6 +14,9 @@ RUN curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add - 
     /etc/apt/sources.list.d/google-chrome.list && \
     apt-get update && apt-get install -y google-chrome-stable
 
+# Chrome 경로 및 버전 확인용 출력 (빌드 로그에서 확인 가능)
+RUN which google-chrome-stable && google-chrome-stable --version
+
 # ChromeDriver 설치 (Chrome 버전에 맞게 자동 다운로드)
 RUN CHROME_VERSION=$(google-chrome-stable --version | grep -oP '\d+\.\d+\.\d+') && \
     DRIVER_VERSION=$(curl -sSL "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}") && \
