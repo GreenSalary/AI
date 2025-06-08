@@ -4,14 +4,23 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import time
 import shutil
+import subprocess
 from typing import Dict, Any
 
 def crawl_naver_blog(url: str) -> Dict[str, Any]:
     options = Options()
 
+    # 크롬 실행 파일 경로 자동 탐색
+    chrome_path = shutil.which("google-chrome-stable") or shutil.which("google-chrome")
+    print(f"[INFO] Chrome binary path: {chrome_path}")
 
-    options.binary_location = "/usr/bin/google-chrome-stable"  # 실제 설치된 경로에 맞게 변경
+    if chrome_path:
+        version = subprocess.run([chrome_path, "--version"], capture_output=True, text=True)
+        print(f"[INFO] Chrome version: {version.stdout.strip()}")
+    else:
+        raise RuntimeError("Chrome binary not found in PATH.")
 
+    options.binary_location = chrome_path
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
