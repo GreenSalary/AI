@@ -1,4 +1,5 @@
 FROM python:3.10-slim
+ENV PATH="/usr/bin:${PATH}"
 
 # 기본 패키지 및 Chrome 설치
 RUN apt-get update && apt-get install -y \
