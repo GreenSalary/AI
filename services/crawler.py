@@ -1,20 +1,21 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 import time
 from typing import Dict, Any
 
 def crawl_naver_blog(url: str) -> Dict[str, Any]:
     options = Options()
 
-    # 수정부분
+    # Headless 크롬 설정 (Docker/Render 환경 대응)
     options.binary_location = "/usr/bin/google-chrome"
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    driver = webdriver.Chrome(options=options)
+
+    # 직접 ChromeDriver 경로 지정 (Dockerfile에 설치된 위치 기준)
+    driver = webdriver.Chrome(executable_path="/usr/local/bin/chromedriver", options=options)
 
     try:
         driver.get(url)
