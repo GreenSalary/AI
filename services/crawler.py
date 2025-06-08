@@ -16,7 +16,6 @@ def crawl_naver_blog(url: str) -> Dict[str, Any]:
 
     soup = BeautifulSoup(resp.text, "html.parser")
 
-    # iframe이 있으면 iframe src 추출 후 다시 요청 시도
     iframe = soup.find("iframe", {"name": "mainFrame"})
     if iframe and iframe.has_attr("src"):
         iframe_url = iframe["src"]
@@ -34,18 +33,13 @@ def crawl_naver_blog(url: str) -> Dict[str, Any]:
         raise RuntimeError("Failed to find blog content container")
 
     content = content_container.get_text(separator="\n").strip()
-
-    # 불필요한 빈 줄 줄이기 (연속된 빈 줄 2줄로 축소)
     content = re.sub(r'\n\s*\n+', '\n\n', content)
 
-    # 각 줄별 앞뒤 공백 제거 및 완전 빈 줄 제거
     lines = content.split('\n')
     cleaned_lines = [line.strip() for line in lines if line.strip() != '']
     content = '\n'.join(cleaned_lines)
 
     images = content_container.find_all("img")
-
-    print(content)
 
     return {
         "content": content,
