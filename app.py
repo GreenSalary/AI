@@ -10,23 +10,33 @@ from services.pdf import create_pdf_report
 from services.utils import check_keywords, get_missing_keywords
 import os
 import uuid
+import fitz  # PyMuPDF
 from dotenv import load_dotenv
-import os
 
-# 환경 변수 로드
 load_dotenv()
-
-# 예시: OpenAI API 키 사용
-openai_api_key = os.getenv("OPENAI_API_KEY")
-
 app = FastAPI()
 
-# 정적 파일 경로 설정
 app.mount("/results", StaticFiles(directory="./results"), name="results")
+app.mount("/images", StaticFiles(directory="./images"), name="images")  
 
 @app.get("/")
 async def root():
     return {"message": "Hello! FastAPI 서버가 정상 작동 중입니다."}
+
+def convert_pdf_to_images(pdf_path: str, output_folder: str):
+    doc = fitz.open(pdf_path)
+    image_paths = []
+    
+    for page_num in range(len(doc)):
+        page = doc.load_page(page_num)
+        pix = page.get_pixmap()
+        
+        image_filename = f"page_{uuid.uuid4().hex}.png"
+        image_path = os.path.join(output_folder, image_filename)
+        pix.save(image_path)
+        image_paths.append(image_path)
+    
+    return image_paths
 
 @app.post("/analyze")
 def analyze_contract(data: ContractRequest):
@@ -39,7 +49,7 @@ def analyze_contract(data: ContractRequest):
         image_count_test = blog_data["image_count"] >= data.media_image
         gpt_result = analyze_with_gpt(blog_data["content"], data.conditions)
 
-        os.makedirs("./results", exist_ok=True)  # 디렉토리 확인 후 생성
+        os.makedirs("./results", exist_ok=True) 
         pdf_filename = f"result_{uuid.uuid4().hex}.pdf"
         pdf_path = os.path.join("./results", pdf_filename)
 
@@ -55,17 +65,18 @@ def analyze_contract(data: ContractRequest):
             gpt_result["details"],
             missing_keywords
         )
-
-        # 정적 경로로 PDF 경로 반환
-        pdf_url = f"/results/{pdf_filename}"
+        
+        os.makedirs("./images", exist_ok=True)
+        image_paths = convert_pdf_to_images(pdf_path, "./images")
+        image_urls = [f"/images/{os.path.basename(image_path)}" for image_path in image_paths]
 
         return {
             "keywordTest": keyword_test,
             "conditionTest": gpt_result["all_passed"],
-            #"conditionDetail": gpt_result["details"],
             "wordCountTest": word_count_test,
             "imageCountTest": image_count_test,
-            "pdf_url": pdf_url,  # 정적 경로로 반환
+            "pdf_url": f"/results/{pdf_filename}",  # PDF 경로
+            "image_urls": image_urls  # 이미지 경로 반환
         }
 
     except Exception as e:
