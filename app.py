@@ -75,15 +75,27 @@ def analyze_contract(data: ContractRequest):
         os.makedirs("./images", exist_ok=True) 
         image_paths = convert_pdf_to_images(pdf_path, "./images")
 
-        image_urls = [f"/images/{os.path.basename(image_path)}" for image_path in image_paths]
+        # 이미지들 업로드하고 URL 받기
+        pdf_images_url = []
+        api_image_upload_url = # env에다가 api 넣기
 
+        for image_path in image_paths:
+            with open(image_path, "rb") as f:
+                files = {
+                    "image": (os.path.basename(image_path), f, "image/png")
+                }
+                res = requests.post(api_image_upload_url, files=files)
+                res.raise_for_status()
+                image_url = res.json()["imageUrl"]
+                pdf_images_url.append(image_url)
+        
         return {
             "keywordTest": keyword_test,
             "conditionTest": gpt_result["all_passed"],
             "wordCountTest": word_count_test,
             "imageCountTest": image_count_test,
             "pdf_url": f"/results/{pdf_filename}",  
-            "image_urls": image_urls  
+            "image_urls": pdf_images_url  
         }
 
     except Exception as e:
