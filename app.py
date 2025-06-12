@@ -12,6 +12,7 @@ import uuid
 import fitz  # PyMuPDF
 from dotenv import load_dotenv
 import shutil
+import requests
 
 load_dotenv()
 app = FastAPI()
