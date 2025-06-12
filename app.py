@@ -77,7 +77,7 @@ def analyze_contract(data: ContractRequest):
 
         # 이미지들 업로드하고 URL 받기
         pdf_images_url = []
-        api_image_upload_url = # env에다가 api 넣기
+        api_image_upload_url = os.getenv("API_IMAGE_UPLOAD_URL")
 
         for image_path in image_paths:
             with open(image_path, "rb") as f:
