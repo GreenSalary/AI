@@ -11,3 +11,4 @@ python-dotenv==1.1.0
 reportlab==4.0.0
 requests 
 beautifulsoup4
+PyMuPDF
