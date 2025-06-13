@@ -113,3 +113,4 @@ async def upload_image(image: UploadFile = File(...)):
         return JSONResponse(content={"imageUrl": image_url})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+        
