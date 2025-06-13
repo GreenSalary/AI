@@ -86,8 +86,8 @@ def create_pdf_report(file_path: str, contract_title: str, influencer_name: str,
         # ❌ No일 때: 해결책(suggestion)만 출력
         if result.lower() == "no":
             # suggestion이 없거나 "없음"이면 빈 문자열 출력
-            solution = suggestion if suggestion and suggestion.strip().lower() != "없음" else "본문에 '서울'이라는 단어를 추가하거나, 제품을 구매하거나 사용한 위치를 '서울'로 명시해야 합니다. 예를 들어, '이 제품은 서울의 올리브영에서도 구매할 수 있습니다.' 또는 '서울에서 이 제품을 사용해본 후기입니다.' 등의 문장을 추가할 수 있습니다."
-            story.append(Paragraph(f"해결책: {solution}", suggestion_style))
+            solution = suggestion if suggestion and suggestion.strip().lower() != "없음" else ""
+            story.append(Paragraph(f"해결책: {solution} {quote}", suggestion_style))
             story.append(Spacer(1, 2))
 
     doc.build(story)
