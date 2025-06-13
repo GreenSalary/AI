@@ -8,7 +8,7 @@ def analyze_with_gpt(content: str, conditions: list) -> Dict[str, Any]:
     prompt = f"""
     다음은 계약 조건입니다:
     {chr(10).join(f"- {c}" for c in conditions)}
-
+    
     아래 블로그 본문에서 각 조건이 충족되었는지 판단해 주세요. 
     각 조건당 "Yes" 또는 "No"만 반환해 주세요. 만약 "No"인 경우, 
     해결책을 제시해 주세요. 조건을 충족했다면, 본문에서 조건을 충족한 근거가 되는 문장 1~2개를 인용해 주세요. 
@@ -62,6 +62,7 @@ def analyze_with_gpt(content: str, conditions: list) -> Dict[str, Any]:
                     "condition": condition,
                     "result": result,
                     "quote": quote
+                
                 })
 
                 if result.lower() != "yes":
